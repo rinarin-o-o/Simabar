@@ -49,9 +49,9 @@ $total_pages = ceil($total_records / $limit);
       <input type="text" name="query" placeholder="Search" title="Enter search keyword" class="form-control me-2">
       <button type="submit" title="Search" class="btn btn-outline-primary"><i class="bi bi-search"></i></button>
     </form>
-    <button type="button" class="btn btn-primary">
+    <a href="frm_tambah_barang.php" class="btn btn-primary">
       <i class="bi bi-plus"></i> Tambah Data
-    </button>
+    </a>
   </div><!-- End Search Bar and Add Button -->
 
   <!-- Data Table -->
