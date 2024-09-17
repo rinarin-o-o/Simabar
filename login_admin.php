@@ -1,3 +1,7 @@
+<?include ('koneksi/koneksi.php');
+session_start();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -41,7 +45,7 @@
             <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
 
               <div class="d-flex justify-content-center py-4">
-                <a href="index.html" class="logo d-flex align-items-center w-auto">
+                <a href="home.html" class="logo d-flex align-items-center w-auto">
                   <img src="images/logo.png" alt="">
                   <span class="d-none d-lg-block">SiMabar</span>
                 </a>
@@ -54,7 +58,7 @@
                   </div>
 
                   <!-- Start of the form -->
-                  <form action="process/login.php" method="POST" class="row g-3 needs-validation" novalidate>
+                  <form action="proses/login.php" method="POST" class="row g-3 needs-validation" novalidate>
 
                     <div class="col-12">
                       <label for="yourUsername" class="form-label">Username</label>

@@ -34,6 +34,7 @@ $result = mysqli_query($conn, $query);
                         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center me-3">
                             <i class="bi bi-house-door"></i>
                         </div>
+                        
                         <div>
                             <h6 class="card-title mb-0 small-font"><?php echo htmlspecialchars($nama_ruang); ?></h6>
                         </div>

@@ -2,6 +2,20 @@
 session_start();
 include('koneksi/koneksi.php'); // Include DB connection
 
+if (isset($_SESSION['success']) && $_SESSION['success'] === true) {
+    echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>"; // SweetAlert2 library
+    echo "<script>
+        Swal.fire({
+            title: 'Berhasil!',
+            text: 'Data berhasil ditambahkan.',
+            icon: 'success',
+            confirmButtonText: 'OK'
+        });
+    </script>";
+    // Reset session success after showing popup
+    unset($_SESSION['success']);
+}
+
 // Handle search query if provided
 $query = isset($_POST['query']) ? mysqli_real_escape_string($conn, $_POST['query']) : '';
 
@@ -43,7 +57,7 @@ $result = mysqli_query($conn, $sql);
       <input type="text" name="query" placeholder="Search" title="Enter search keyword" class="form-control me-2" value="<?php echo htmlspecialchars($query); ?>">
       <button type="submit" title="Search" class="btn btn-outline-primary"><i class="bi bi-search"></i></button>
     </form>
-    <a href="tambah_lokasi.php" class="btn btn-primary">
+    <a href="frm_tambah_lokasi.php" class="btn btn-primary">
       <i class="bi bi-plus"></i> Tambah Data
     </a>
   </div><!-- End Search Bar and Add Button -->
@@ -62,29 +76,30 @@ $result = mysqli_query($conn, $sql);
       </tr>
     </thead>
     <tbody>
-      <?php
-      // Display data
-      $no = $offset + 1;
-      while ($row = mysqli_fetch_assoc($result)) {
-        echo "<tr class='text-center'>";
-        echo "<th scope='row'>{$no}</th>";
-        echo "<td>{$row['id_lokasi']}</td>";
-        echo "<td>{$row['nama_lokasi']}</td>";
-        echo "<td>{$row['bid_lokasi']}</td>";
-        echo "<td>{$row['tempat_lokasi']}</td>";
-        echo "<td>{$row['desk_lokasi']}</td>";
-        echo "<td>
-                <a href='edit_lokasi.php?id_lokasi={$row['id_lokasi']}' class='btn btn-warning btn-sm' title='Edit'>
-                  <i class='bi bi-pencil'></i>
-                </a>
-                <a href='delete_lokasi.php?id_lokasi={$row['id_lokasi']}' class='btn btn-danger btn-sm' onclick='return confirm(\"Apakah Anda yakin ingin menghapus data ini?\")' title='Hapus'>
-                  <i class='bi bi-trash'></i>
-                </a>
-              </td>";
-        echo "</tr>";
-        $no++;
-      }
-      ?>
+    <?php
+$no = $offset + 1;
+while ($row = mysqli_fetch_assoc($result)) {
+  echo "<tr class='text-center'>";
+  echo "<th scope='row'>{$no}</th>";
+  echo "<td>{$row['id_lokasi']}</td>";
+  echo "<td>{$row['nama_lokasi']}</td>";
+  echo "<td>{$row['bid_lokasi']}</td>";
+  echo "<td>{$row['tempat_lokasi']}</td>";
+  echo "<td>{$row['desk_lokasi']}</td>";
+  echo "<td>
+          <a href='frm_edit_lokasi.php?id_lokasi={$row['id_lokasi']}' class='btn btn-warning btn-sm' title='Edit'>
+            <i class='bi bi-pencil'></i>
+          </a>
+          <button class='btn btn-danger btn-sm btn-hapus' data-id_lokasi='{$row['id_lokasi']}' title='Hapus'>
+            <i class='bi bi-trash'></i>
+          </button>
+        </td>";
+  echo "</tr>";
+  $no++;
+}
+?>
+
+
     </tbody>
   </table>
 
@@ -110,3 +125,33 @@ $result = mysqli_query($conn, $sql);
 </main><!-- End Main Content -->
 
 <?php include("component/footer.php"); ?>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+$(document).ready(function() {
+    // Event handler untuk tombol hapus
+    $('.btn-hapus').on('click', function() {
+        // Ambil id_lokasi dari atribut data
+        var id_lokasi = $(this).data('id_lokasi');
+
+        // Tampilkan popup SweetAlert2
+        Swal.fire({
+            title: 'Apakah kamu yakin?',
+            text: "Data ini akan dihapus secara permanen!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Redirect ke halaman hapus
+                window.location.href = 'proses/lokasi/hapus_lokasi.php?id_lokasi=' + id_lokasi;
+            }
+        });
+    });
+});
+</script>

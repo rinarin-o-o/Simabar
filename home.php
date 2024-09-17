@@ -3,19 +3,19 @@ session_start();
 include('koneksi/koneksi.php'); // Include the database connection
 
 // Query to get the number of Kendaraan categories in data_barang
-$queryKendaraan = "SELECT COUNT(DISTINCT kategori) AS total_kendaraan FROM data_barang WHERE kategori = 'Kendaraan'";
+$queryKendaraan = "SELECT COUNT(DISTINCT kategori) AS total_kendaraan FROM data_barang WHERE kategori = 'kendaraan'";
 $resultKendaraan = mysqli_query($conn, $queryKendaraan);
 $rowKendaraan = mysqli_fetch_assoc($resultKendaraan);
 $totalKendaraan = $rowKendaraan['total_kendaraan'];
 
 // Query to get the number of Ruangan categories in lokasi
-$queryRuang = "SELECT COUNT(DISTINCT kategori_lokasi) AS total_ruang FROM lokasi WHERE kategori_lokasi = 'Ruangan'";
+$queryRuang = "SELECT COUNT(DISTINCT kategori_lokasi) AS total_ruang FROM lokasi WHERE kategori_lokasi = 'ruangan'";
 $resultRuang = mysqli_query($conn, $queryRuang);
 $rowRuang = mysqli_fetch_assoc($resultRuang);
 $totalRuang = $rowRuang['total_ruang'];
 
 // Query to get the number of Fasilitas Umum (Fasum) categories in lokasi
-$queryFasum = "SELECT COUNT(DISTINCT kategori_lokasi) AS total_fasum FROM lokasi WHERE kategori_lokasi = 'Fasum'";
+$queryFasum = "SELECT COUNT(DISTINCT kategori_lokasi) AS total_fasum FROM lokasi WHERE kategori_lokasi = 'fasilitas_umum'";
 $resultFasum = mysqli_query($conn, $queryFasum);
 $rowFasum = mysqli_fetch_assoc($resultFasum);
 $totalFasum = $rowFasum['total_fasum'];

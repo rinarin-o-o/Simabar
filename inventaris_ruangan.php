@@ -1,105 +1,115 @@
 <?php
-session_start();
-include('koneksi/koneksi.php'); // Include DB connection
+include 'koneksi.php'; // Koneksi ke database
 
-// Get the location ID from the URL parameter
-$location_id = isset($_GET['id_lokasi']) ? intval($_GET['id_lokasi']) : 0;
+// Mendapatkan ID ruangan dari parameter URL atau filter
+$ruang_id = isset($_GET['ruang_id']) ? $_GET['ruang_id'] : 0;
+$tanggal_mulai = isset($_GET['tanggal_mulai']) ? $_GET['tanggal_mulai'] : '';
+$tanggal_akhir = isset($_GET['tanggal_akhir']) ? $_GET['tanggal_akhir'] : '';
 
-if ($location_id > 0) {
-    // Prepare a statement to fetch inventory data based on the room (location)
-    $stmt = $conn->prepare("SELECT db.jenis_barang, db.merk, db.no_seri_pabrik, db.ukuran, db.bahan, 
-                                   db.tahun_pembelian, db.no_kode_barang, db.jumlah_barang, db.harga_beli, 
-                                   db.barang_baik, db.barang_kurang_baik, db.barang_rusak_berat 
-                            FROM data_barang db 
-                            WHERE db.id_lokasi = ?");
-    $stmt->bind_param("i", $location_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-} else {
-    echo "Invalid room.";
-    exit;
+// Query untuk mengambil data inventaris berdasarkan ruang_id dan filter tanggal jika ada
+$query = "SELECT b.kode_barang, b.nama_barang, b.tipe_barang, b.merk_barang, b.nomor_seri, b.ukuran_barang, 
+    b.bahan_barang, b.tahun_pembelian, b.jumlah_barang, b.harga_barang, b.kondisi_barang 
+    FROM data_barang b
+    WHERE b.ruang_sekarang = '$ruang_id'";
+
+if ($tanggal_mulai && $tanggal_akhir) {
+    $query .= " AND b.tanggal_pembelian BETWEEN '$tanggal_mulai' AND '$tanggal_akhir'";
 }
+
+$result = mysqli_query($conn, $query);
+
+// Menghitung jumlah barang berdasarkan kondisi
+$query_kondisi = "SELECT 
+    SUM(CASE WHEN kondisi_barang = 'Baik' THEN 1 ELSE 0 END) AS baik,
+    SUM(CASE WHEN kondisi_barang = 'Rusak Sedang' THEN 1 ELSE 0 END) AS rusak_sedang,
+    SUM(CASE WHEN kondisi_barang = 'Rusak Berat' THEN 1 ELSE 0 END) AS rusak_berat
+    FROM data_barang
+    WHERE ruang_sekarang = '$ruang_id'";
+
+if ($tanggal_mulai && $tanggal_akhir) {
+    $query_kondisi .= " AND tanggal_pembelian BETWEEN '$tanggal_mulai' AND '$tanggal_akhir'";
+}
+
+$result_kondisi = mysqli_query($conn, $query_kondisi);
+$kondisi = mysqli_fetch_assoc($result_kondisi);
 ?>
 
-<?php include("component/header.php"); ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventaris Ruangan</title>
+    <!-- Tambahkan CSS sesuai dengan keinginan Anda -->
+</head>
+<body>
 
-<main id="main" class="main">
-  <div class="pagetitle">
-    <h1>Inventaris Ruangan</h1>
-  </div><!-- End Page Title -->
+<h1>Inventaris Ruangan - Ruang ID: <?= $ruang_id ?></h1>
 
-  <!-- Display Room Name Dynamically -->
-  <?php 
-  // Prepare a statement to fetch room name
-  $roomStmt = $conn->prepare("SELECT nama_lokasi FROM lokasi WHERE id_lokasi = ?");
-  $roomStmt->bind_param("i", $location_id);
-  $roomStmt->execute();
-  $roomResult = $roomStmt->get_result();
-  $roomName = $roomResult->fetch_assoc()['nama_lokasi'];
-  ?>
-  <h2><center><?php echo htmlspecialchars($roomName); ?></center></h2>
+<!-- Form Filter Tanggal -->
+<form method="GET" action="inventaris_ruangan.php">
+    <input type="hidden" name="ruang_id" value="<?= $ruang_id ?>">
+    <label for="tanggal_mulai">Tanggal Mulai:</label>
+    <input type="date" name="tanggal_mulai" value="<?= $tanggal_mulai ?>">
+    <label for="tanggal_akhir">Tanggal Akhir:</label>
+    <input type="date" name="tanggal_akhir" value="<?= $tanggal_akhir ?>">
+    <button type="submit">Filter</button>
+</form>
 
-  <!-- Data Table -->
-  <table class="table table-striped table-bordered table-hover">
-    <thead class="table-secondary text-center align-middle">
-      <tr>
-        <th rowspan="2">No</th>
-        <th rowspan="2">Jenis Barang / Nama Barang</th>
-        <th rowspan="2">Merk / Model</th>
-        <th rowspan="2">No. Seri Pabrik</th>
-        <th rowspan="2">Ukuran</th>
-        <th rowspan="2">Bahan</th>
-        <th rowspan="2">Tahun Pembuatan/ Pembelian</th>
-        <th rowspan="2">No. Kode Barang</th>
-        <th rowspan="2">Jumlah Barang</th>
-        <th rowspan="2">Harga Beli / Perolehan</th>
-        <th colspan="3">Keadaan Barang</th>
-      </tr>
-      <tr>
-        <th>Barang Baik</th>
-        <th>Barang Kurang Baik</th>
-        <th>Barang Rusak Berat</th>
-      </tr>
+<!-- Tabel Inventaris -->
+<table border="1">
+    <thead>
+        <tr>
+            <th>Kode Barang</th>
+            <th>Nama Barang</th>
+            <th>Tipe Barang</th>
+            <th>Merk</th>
+            <th>Nomor Seri</th>
+            <th>Ukuran</th>
+            <th>Bahan</th>
+            <th>Tahun Pembelian</th>
+            <th>Jumlah</th>
+            <th>Harga</th>
+            <th>Kondisi</th>
+        </tr>
     </thead>
-    <tbody class="text-center align-middle">
-      <?php
-      if ($result->num_rows > 0) {
-          $no = 1;
-          while ($row = $result->fetch_assoc()) {
-              echo "<tr>
-                      <th scope='row'>{$no}</th>
-                      <td>{$row['jenis_barang']}</td>
-                      <td>{$row['merk']}</td>
-                      <td>{$row['no_seri_pabrik']}</td>
-                      <td>{$row['ukuran']}</td>
-                      <td>{$row['bahan']}</td>
-                      <td>{$row['tahun_pembelian']}</td>
-                      <td>{$row['no_kode_barang']}</td>
-                      <td>{$row['jumlah_barang']}</td>
-                      <td>Rp " . number_format($row['harga_beli'], 2, ',', '.') . "</td>
-                      <td>{$row['barang_baik']}</td>
-                      <td>{$row['barang_kurang_baik']}</td>
-                      <td>{$row['barang_rusak_berat']}</td>
-                    </tr>";
-              $no++;
-          }
-      } else {
-          echo "<tr><td colspan='13'>No data found for this room.</td></tr>";
-      }
-      ?>
+    <tbody>
+        <?php while ($row = mysqli_fetch_assoc($result)) : ?>
+        <tr>
+            <td><?= $row['kode_barang'] ?></td>
+            <td><?= $row['nama_barang'] ?></td>
+            <td><?= $row['tipe_barang'] ?></td>
+            <td><?= $row['merk_barang'] ?></td>
+            <td><?= $row['nomor_seri'] ?></td>
+            <td><?= $row['ukuran_barang'] ?></td>
+            <td><?= $row['bahan_barang'] ?></td>
+            <td><?= $row['tahun_pembelian'] ?></td>
+            <td><?= $row['jumlah_barang'] ?></td>
+            <td><?= $row['harga_barang'] ?></td>
+            <td><?= $row['kondisi_barang'] ?></td>
+        </tr>
+        <?php endwhile; ?>
     </tbody>
-  </table><!-- End Data Table -->
+</table>
 
-  <!-- Buttons for Print -->
-  <div class="d-flex justify-content-start mb-4">
-    <button type="button" class="btn btn-info me-2">
-      <i class="bi bi-printer"></i> Cetak KIR
-    </button>
-    <button type="button" class="btn btn-info">
-      <i class="bi bi-barcode"></i> Cetak Barcode KIR
-    </button>
-  </div><!-- End Buttons for Print -->
+<!-- Tabel Kondisi Barang -->
+<h2>Kondisi Barang</h2>
+<table border="1">
+    <tr>
+        <th>Baik</th>
+        <th>Rusak Sedang</th>
+        <th>Rusak Berat</th>
+    </tr>
+    <tr>
+        <td><?= $kondisi['baik'] ?></td>
+        <td><?= $kondisi['rusak_sedang'] ?></td>
+        <td><?= $kondisi['rusak_berat'] ?></td>
+    </tr>
+</table>
 
-</main><!-- End Main Content -->
+<!-- Tombol Cetak -->
+<a href="cetak_kir.php?ruang_id=<?= $ruang_id ?>">Cetak KIR</a>
+<a href="cetak_barcode.php?ruang_id=<?= $ruang_id ?>">Cetak Barcode</a>
 
-<?php include("component/footer.php"); ?>
+</body>
+</html>
