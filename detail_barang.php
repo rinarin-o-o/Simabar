@@ -3,10 +3,10 @@ session_start();
 include('koneksi/koneksi.php'); // Include DB connection
 
 // Get the 'no_regristrasi' from the URL
-$no_regristrasi = isset($_GET['no_regristrasi']) ? $_GET['no_regristrasi'] : '';
+$kode_barang = isset($_GET['kode_barang']) ? $_GET['kode_barang'] : '';
 
 // Fetch item details based on 'no_regristrasi'
-$sql = "SELECT * FROM data_barang WHERE no_regristrasi = '$no_regristrasi'";
+$sql = "SELECT * FROM data_barang WHERE kode_barang = '$kode_barang'";
 $result = mysqli_query($conn, $sql);
 
 // Check if item is found
@@ -186,9 +186,8 @@ if (mysqli_num_rows($result) > 0) {
         <!-- Edit and Delete Actions -->
         <div class="row mb-3">
           <div class="col-sm-12">
-            <a href="edit_barang.php?no_regristrasi=<?php echo $row['no_regristrasi']; ?>" class="btn btn-warning me-2">Edit</a>
-            <a href="hapus_barang.php?no_regristrasi=<?php echo $row['no_regristrasi']; ?>" class="btn btn-danger">Hapus</a>
-          </div>
+            <a href="frm_edit_barang.php?kode_barang=<?php echo $row['kode_barang']; ?>" class="btn btn-warning btn-sm">Edit</a>
+            <a href="hapus_barang.php?kode_barang=<?php echo $row['kode_barang']; ?>" class="btn btn-danger btn-sm btn-hapus" data-kode_barang="<?php echo $row['kode_barang']; ?>">Hapus</a>
         </div>
       </form>
     </div>
@@ -211,4 +210,34 @@ function togglePhoto() {
         toggleLink.innerHTML = "Lihat Foto...";
     }
 }
+</script>
+
+<!-- Hapus -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    // Event handler for delete button
+    $('.btn-hapus').on('click', function(e) {
+        e.preventDefault(); // Prevent the default anchor behavior
+        var kode_barang = $(this).data('kode_barang'); // Get the kode_barang from data attribute
+        
+        // SweetAlert confirmation dialog
+        Swal.fire({
+            title: 'Apakah Anda yakin?',
+            text: "Data barang akan dihapus secara permanen!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // If user confirms, redirect to the deletion URL with kode_barang
+                window.location.href = 'proses/barang/hapus_barang.php?kode_barang=' + kode_barang;
+            }
+        });
+    });
+});
 </script>
