@@ -48,3 +48,4 @@ if (isset($_GET['download']) && $_GET['download'] === 'true') {
 </body>
 <?php include ("component/footer.php");?>
 </html>
+
