@@ -1,5 +1,6 @@
 <?php
-include 'koneksi.php'; // Koneksi ke database
+// Include koneksi database
+include('koneksi/koneksi.php');
 
 // Mendapatkan ID ruangan dari parameter URL atau filter
 $ruang_id = isset($_GET['ruang_id']) ? $_GET['ruang_id'] : 0;
@@ -7,10 +8,12 @@ $tanggal_mulai = isset($_GET['tanggal_mulai']) ? $_GET['tanggal_mulai'] : '';
 $tanggal_akhir = isset($_GET['tanggal_akhir']) ? $_GET['tanggal_akhir'] : '';
 
 // Query untuk mengambil data inventaris berdasarkan ruang_id dan filter tanggal jika ada
-$query = "SELECT b.kode_barang, b.nama_barang, b.tipe_barang, b.merk_barang, b.nomor_seri, b.ukuran_barang, 
-    b.bahan_barang, b.tahun_pembelian, b.jumlah_barang, b.harga_barang, b.kondisi_barang 
+$query = "SELECT b.kode_barang, b.nama_barang, b.tipe_barang, b.merk_barang, b.no_pabrik, b.ukuran_CC, 
+    b.bahan, b.tanggal_pembelian, b.harga_awal, b.kondisi_barang 
     FROM data_barang b
     WHERE b.ruang_sekarang = '$ruang_id'";
+
+// echo $query;
 
 if ($tanggal_mulai && $tanggal_akhir) {
     $query .= " AND b.tanggal_pembelian BETWEEN '$tanggal_mulai' AND '$tanggal_akhir'";
@@ -41,6 +44,7 @@ $kondisi = mysqli_fetch_assoc($result_kondisi);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inventaris Ruangan</title>
     <!-- Tambahkan CSS sesuai dengan keinginan Anda -->
+     <link rel="stylesheet" href="../inventaris.css">
 </head>
 <body>
 
@@ -63,7 +67,7 @@ $kondisi = mysqli_fetch_assoc($result_kondisi);
             <th>Kode Barang</th>
             <th>Nama Barang</th>
             <th>Tipe Barang</th>
-            <th>Merk</th>
+            <th>Merk barang</th>
             <th>Nomor Seri</th>
             <th>Ukuran</th>
             <th>Bahan</th>
