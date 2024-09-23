@@ -15,7 +15,7 @@ if (isset($_POST['query'])) {
 }
 
 // Fetch data from the `data_barang` table with limit and offset
-$sql = "SELECT no_regristrasi, tgl_pembelian, kode_barang, harga_total, nama_barang 
+$sql = "SELECT no_registrasi, tgl_pembelian, kode_barang, harga_total, nama_barang 
         FROM data_barang 
         $search_query 
         LIMIT $start, $limit";
@@ -71,12 +71,12 @@ $total_pages = ceil($total_records / $limit);
     if (mysqli_num_rows($result) > 0) {
         while ($row = mysqli_fetch_assoc($result)) {
             echo "<tr class='text-center'>
-                    <td>{$row['no_regristrasi']}</td>
+                    <td>{$row['no_registrasi']}</td>
                     <td>" . date('d/m/Y', strtotime($row['tgl_pembelian'])) . "</td>
                     <td>{$row['kode_barang']}</td>
                     <td>Rp " . number_format($row['harga_total'], 2, ',', '.') . "</td>
                     <td>{$row['nama_barang']}</td>
-                    <td><a href='detail_barang.php?no_regristrasi={$row['no_regristrasi']}' class='text-primary'>Detail</a></td>
+                    <td><a href='detail_barang.php?no_registrasi={$row['no_registrasi']}' class='text-primary'>Detail</a></td>
                   </tr>";
         }
     } else {
