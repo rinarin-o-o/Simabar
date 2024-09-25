@@ -38,9 +38,9 @@ if (mysqli_num_rows($result) > 0) {
           </div>
         </div>
         <div class="row mb-3">
-          <label for="no_regristrasi" class="col-sm-3 col-form-label">No. Registrasi:</label>
+          <label for="no_registrasi" class="col-sm-3 col-form-label">No. Registrasi:</label>
           <div class="col-sm-9">
-            <input type="text" id="no_regristrasi" class="form-control" value="<?php echo $row['no_regristrasi']; ?>" readonly>
+            <input type="text" id="no_registrasi" class="form-control" value="<?php echo $row['no_registrasi']; ?>" readonly>
           </div>
         </div>
         <div class="row mb-3">
