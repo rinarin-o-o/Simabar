@@ -1,39 +1,8 @@
 <?php
-ob_start(); // Start output buffering
+ob_start();
 session_start();
 include('koneksi/koneksi.php');
-include('component/header.php'); 
-
-// Handle form submission
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Sanitize input to prevent SQL injection
-    $id_lokasi = mysqli_real_escape_string($conn, $_POST['id_lokasi']);
-    $nama_lokasi = mysqli_real_escape_string($conn, $_POST['nama_lokasi']);
-    $bid_lokasi = mysqli_real_escape_string($conn, $_POST['bid_lokasi']);
-    $tempat_lokasi = mysqli_real_escape_string($conn, $_POST['tempat_lokasi']);
-    $kategori_lokasi = mysqli_real_escape_string($conn, $_POST['kategori_lokasi']);
-    $desk_lokasi = mysqli_real_escape_string($conn, $_POST['desk_lokasi']);
-
-    // Insert data into lokasi table
-    $sql = "INSERT INTO lokasi (id_lokasi, nama_lokasi, bid_lokasi, tempat_lokasi, kategori_lokasi, desk_lokasi) 
-            VALUES ('$id_lokasi', '$nama_lokasi', '$bid_lokasi', '$tempat_lokasi', '$kategori_lokasi', '$desk_lokasi')";
-
-    if (mysqli_query($conn, $sql)) {
-        // Set session success flag and redirect to lokasi.php
-        $_SESSION['success'] = true;
-        header('Location: lokasi.php');
-        exit();
-    } else {
-        // Check for duplicate entry error
-        if (mysqli_errno($conn) == 1062) { // 1062 is the MySQL error code for duplicate entry
-            $_SESSION['error'] = 'Duplikat Kode Lokasi. Data sudah ada.';
-            header('Location: frm_tambah_lokasi.php');
-            exit();
-        } else {
-            echo "Error: " . $sql . "<br>" . mysqli_error($conn);
-        }
-    }
-}
+include('component/header.php');
 ?>
 
 <main id="main" class="main">
@@ -46,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       <h5 class="card-title">Form</h5>
 
       <!-- Form for adding new location -->
-      <form method="POST" action="">
+      <form id="addLocationForm" method="POST" action="">
 
         <div class="mb-3">
           <label for="id_lokasi" class="form-label">Kode Lokasi</label>
@@ -94,10 +63,47 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <?php include("component/footer.php"); ?>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.getElementById('addLocationForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent the form from submitting immediately
+
+    Swal.fire({
+        title: 'Konfirmasi',
+        text: 'Apakah Anda yakin ingin menambah lokasi ini?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, tambah!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const formData = new FormData(document.getElementById('addLocationForm'));
+
+            fetch('proses/lokasi/tambah_lokasi.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                if (data.includes('Error')) {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: data,
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                } else {
+                    window.location.href = 'lokasi.php';
+                }
+            });
+        }
+    });
+});
+
+</script>
+
 <?php
-// Display error popup if session error is set
 if (isset($_SESSION['error'])) {
-    echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>"; // SweetAlert2 library
     echo "<script>
         Swal.fire({
             title: 'Error!',

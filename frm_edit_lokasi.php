@@ -1,4 +1,5 @@
 <?php
+ob_start();
 session_start();
 include('koneksi/koneksi.php'); // Include DB connection
 
@@ -22,45 +23,21 @@ if (mysqli_num_rows($result) == 1) {
     header('Location: lokasi.php');
     exit;
 }
-
-// Handle form submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $nama_lokasi = mysqli_real_escape_string($conn, $_POST['nama_lokasi']);
-    $bid_lokasi = mysqli_real_escape_string($conn, $_POST['bid_lokasi']);
-    $tempat_lokasi = mysqli_real_escape_string($conn, $_POST['tempat_lokasi']);
-    $kategori_lokasi = mysqli_real_escape_string($conn, $_POST['kategori_lokasi']);
-    $desk_lokasi = mysqli_real_escape_string($conn, $_POST['desk_lokasi']);
-
-    // Update query
-    $sql_update = "UPDATE lokasi 
-                   SET nama_lokasi='$nama_lokasi', bid_lokasi='$bid_lokasi', tempat_lokasi='$tempat_lokasi', desk_lokasi='$desk_lokasi'
-                   WHERE id_lokasi='$id_lokasi'";
-
-    if (mysqli_query($conn, $sql_update)) {
-        $_SESSION['success'] = true;
-        // Redirect to lokasi.php after update
-        header('Location: lokasi.php');
-        exit;
-    } else {
-        echo "Error: " . mysqli_error($conn);
-    }
-}
 ?>
 
 <?php include("component/header.php"); ?>
 
 <main id="main" class="main">
-
     <div class="pagetitle">
         <h1>Edit Lokasi</h1>
     </div><!-- End Page Title -->
 
     <!-- Edit Location Form -->
-    <form action="" method="POST">
+    <form id="editLocationForm" action="proses/lokasi/edit_lokasi.php" method="POST">
         <div class="row mb-3">
             <label for="id_lokasi" class="col-sm-2 col-form-label">Kode Lokasi</label>
             <div class="col-sm-10">
-                <input type="text" name="id_lokasi" class="form-control" value="<?php echo $row['id_lokasi']; ?>" readonly>
+                <input type="text" name="id_lokasi" class="form-control" value="<?php echo htmlspecialchars($row['id_lokasi']); ?>" readonly>
             </div>
         </div>
 
@@ -88,18 +65,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="row mb-3">
             <label for="kategori_lokasi" class="col-sm-2 col-form-label">Kategori</label>
             <div class="col-sm-10">
-                <input type="text" name="kategori_lokasi" class="form-control" value="<?php echo htmlspecialchars($row['kategori_lokasi']); ?>" required>
+                <select name="kategori_lokasi" class="form-select" aria-label="Default select example" required>
+                    <option value="Ruangan" <?php echo ($row['kategori_lokasi'] == 'Ruangan') ? 'selected' : ''; ?>>Ruangan</option>
+                    <option value="Fasilitas Umum" <?php echo ($row['kategori_lokasi'] == 'Fasilitas Umum') ? 'selected' : ''; ?>>Fasilitas Umum</option>
+                </select>
             </div>
-        </div>
-
-        <div class=" row mb-3">
-          <label for="kategori_lokasi" class="form-label">Kategori</label>
-          <div class="col-sm-10">
-            <select name="kategori_lokasi" class="form-select" aria-label="Default select example" id="kategori_lokasi" required>
-                <option value="" disabled selected>Pilih Kategori</option>
-                <option value="ruangan">Ruangan</option>
-                <option value="fasilitas_umum">Fasilitas Umum</option>
-            </select>
         </div>
 
         <div class="row mb-3">
@@ -111,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <div class="row mb-3">
             <div class="col-sm-10 offset-sm-2">
-                <button type="submit" class="btn btn-primary">Update</button>
+                <button type="submit" class="btn btn-primary" id="submitButton">Update</button>
                 <a href="lokasi.php" class="btn btn-secondary">Cancel</a>
             </div>
         </div>
@@ -120,3 +90,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </main><!-- End Main Content -->
 
 <?php include("component/footer.php"); ?>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.getElementById('editLocationForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent the form from submitting immediately
+
+    Swal.fire({
+        title: 'Konfirmasi',
+        text: 'Apakah Anda yakin ingin merubah data ini?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ya, update!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // If confirmed, submit the form
+            document.getElementById('editLocationForm').submit();
+        }
+    });
+});
+</script>
+
+<?php
+if (isset($_SESSION['error'])) {
+    echo "<script>
+        Swal.fire({
+            title: 'Error!',
+            text: '" . $_SESSION['error'] . "',
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+    </script>";
+    // Reset session error after showing popup
+    unset($_SESSION['error']);
+}
+?>

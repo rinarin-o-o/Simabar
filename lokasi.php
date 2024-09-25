@@ -2,20 +2,6 @@
 session_start();
 include('koneksi/koneksi.php'); // Include DB connection
 
-if (isset($_SESSION['success']) && $_SESSION['success'] === true) {
-    echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>"; // SweetAlert2 library
-    echo "<script>
-        Swal.fire({
-            title: 'Berhasil!',
-            text: 'Data berhasil ditambahkan.',
-            icon: 'success',
-            confirmButtonText: 'OK'
-        });
-    </script>";
-    // Reset session success after showing popup
-    unset($_SESSION['success']);
-}
-
 // Handle search query if provided
 $query = isset($_POST['query']) ? mysqli_real_escape_string($conn, $_POST['query']) : '';
 

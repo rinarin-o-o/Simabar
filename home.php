@@ -2,21 +2,36 @@
 session_start();
 include('koneksi/koneksi.php'); // Include the database connection
 
-// Query to get the number of Kendaraan categories in data_barang
+// KENDARAAN
 $queryKendaraan = "SELECT COUNT(DISTINCT kategori) AS total_kendaraan FROM data_barang WHERE kategori = 'kendaraan'";
 $resultKendaraan = mysqli_query($conn, $queryKendaraan);
 $rowKendaraan = mysqli_fetch_assoc($resultKendaraan);
 $totalKendaraan = $rowKendaraan['total_kendaraan'];
 
-// Query to get the number of Ruangan categories in lokasi
-$queryRuang = "SELECT COUNT(DISTINCT kategori_lokasi) AS total_ruang FROM lokasi WHERE kategori_lokasi = 'ruangan'";
+// RUANGAN
+$queryRuang = "SELECT COUNT(*) AS total_ruang 
+              FROM lokasi 
+              WHERE LOWER(TRIM(kategori_lokasi)) = 'ruangan'";
 $resultRuang = mysqli_query($conn, $queryRuang);
+
+if (!$resultRuang) {
+    die('Query Error: ' . mysqli_error($conn)); // Jika ada error pada query
+}
+
 $rowRuang = mysqli_fetch_assoc($resultRuang);
 $totalRuang = $rowRuang['total_ruang'];
 
-// Query to get the number of Fasilitas Umum (Fasum) categories in lokasi
-$queryFasum = "SELECT COUNT(DISTINCT kategori_lokasi) AS total_fasum FROM lokasi WHERE kategori_lokasi = 'fasilitas_umum'";
+
+// FASUM
+$queryFasum = "SELECT COUNT(*) AS total_fasum 
+               FROM lokasi 
+               WHERE LOWER(TRIM(kategori_lokasi)) = 'fasilitas_umum'";
 $resultFasum = mysqli_query($conn, $queryFasum);
+
+if (!$resultFasum) {
+    die('Query Error: ' . mysqli_error($conn)); // Jika ada error pada query
+}
+
 $rowFasum = mysqli_fetch_assoc($resultFasum);
 $totalFasum = $rowFasum['total_fasum'];
 
@@ -28,6 +43,10 @@ $totalFasum = $rowFasum['total_fasum'];
 
     <div class="pagetitle">
       <h1>Dashboard</h1>
+    </div><!-- End Page Title -->
+
+    <div class="pagetitle text-center">
+      <h5>Dinkominfotik Kab. Brebes</h5>
     </div><!-- End Page Title -->
 
     <section class="section dashboard">
