@@ -1,5 +1,7 @@
-<?php include("component/header.php"); ?>
-<?php include("koneksi/koneksi.php"); // Include the database connection ?>
+<?php 
+include("component/header.php"); 
+include("koneksi/koneksi.php"); // Include the database connection 
+?>
 
 <main id="main" class="main">
   <div class="pagetitle">
@@ -16,12 +18,12 @@
   <!-- Search Bar and Add Button -->
   <div class="d-flex justify-content-between align-items-center mb-3">
     <form class="search-form d-flex align-items-center" method="POST" action="#">
-      <input type="text" name="query" placeholder="Search" title="Enter search keyword" class="form-control me-2">
-      <button type="submit" title="Search" class="btn btn-outline-primary"><i class="bi bi-search"></i></button>
+      <input type="text" name="query" placeholder="Search" title="Enter search keyword" class="form-control me-2" value="<?= isset($_POST['query']) ? $_POST['query'] : '' ?>">
+      <button type="submit" title="Search" class="btn btn-outline-primary">
+        <i class="bi bi-search"></i>
+      </button>
     </form>
-    <button type="button" class="btn btn-primary">
-      <i class="bi bi-plus"></i> Tambah Data
-    </button>
+
   </div><!-- End Search Bar and Add Button -->
 
   <!-- Data Table -->
