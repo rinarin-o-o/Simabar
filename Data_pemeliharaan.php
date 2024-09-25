@@ -19,7 +19,7 @@
       <input type="text" name="query" placeholder="Search" title="Enter search keyword" class="form-control me-2">
       <button type="submit" title="Search" class="btn btn-outline-primary"><i class="bi bi-search"></i></button>
     </form>
-    <a href="tambah_pemeliharaan.php" class="btn btn-primary">
+    <a href="frm_tambah_pemeliharaan.php" class="btn btn-primary">
       <i class="bi bi-plus"></i> Tambah Data
     </a>
   </div><!-- End Search Bar and Add Button -->
@@ -65,7 +65,7 @@
                         <a href='edit_pemeliharaan.php?kode_barang={$row['kode_barang']}' class='btn btn-warning btn-sm' data-bs-toggle='tooltip' title='Edit'>
                           <i class='bi bi-pencil'></i>
                         </a>
-                        <a href='delete_pemeliharaan.php?kode_barang={$row['kode_barang']}' class='btn btn-danger btn-sm' onclick='return confirm(\"Apakah Anda yakin ingin menghapus Riwayat pemeliharaan ini?\")' data-bs-toggle='tooltip' title='Hapus'>
+                        <a href='hapus_pemeliharaan.php?kode_barang={$row['kode_barang']}' class='btn btn-danger btn-sm' onclick='return confirm(\"Apakah Anda yakin ingin menghapus Riwayat pemeliharaan ini?\")' data-bs-toggle='tooltip' title='Hapus'>
                           <i class='bi bi-trash'></i>
                         </a>
                       </td>
