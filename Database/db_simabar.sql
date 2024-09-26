@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 17, 2024 at 03:51 AM
+-- Generation Time: Sep 25, 2024 at 08:57 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -118,12 +118,12 @@ CREATE TABLE `data_barang` (
 --
 
 INSERT INTO `data_barang` (`kode_barang`, `nama_barang`, `no_regristrasi`, `kode_pemilik`, `ruang_asal`, `ruang_sekarang`, `bid_ruang`, `tempat_ruang`, `tgl_pembelian`, `tgl_pembukuan`, `merk`, `type`, `kategori`, `ukuran_CC`, `no_pabrik`, `no_rangka`, `no_bpkb`, `bahan`, `no_mesin`, `no_polisi`, `kondisi_barang`, `masa_manfaat`, `harga_awal`, `harga_total`, `keterangan`, `foto_barang`) VALUES
-('1.3.2.05.003.001.008', 'Meja Kerja Pegawai Non struktural', '1', '12', 'Ruang 14', 'Ruang 14', 'Bidang Komunikasi dan Kehumasan', 'Dinkominfotik Kab. Brebes', '1976-01-30', '1976-01-30', 'Meja Tulis', NULL, 'Peralatan', NULL, NULL, NULL, NULL, 'Kayu', NULL, NULL, 'Kurang Baik', '60 Bulan', 68750.00, 68750.00, NULL, 'images/1325318.jpeg'),
+('1.3.2.05.003.001.008', 'Meja Kerja Pegawai Non struktural', '1', '12', 'Ruang 14', 'Ruang 14', 'j1jj', 'jsj', '1976-01-30', '1976-01-30', 'Meja Tulis', '', 'Peralatan', '', '', '', '', 'Kayu', '', '', 'Kurang Baik', '6', 68.75, 68.75, '', ''),
 ('1.3.2.05.003.001.101', 'kursi plastik', '15', '10', 'Dapur', 'Gudang', NULL, 'Dinkominfotik Kab. Brebes', '1976-01-30', '1976-01-30', NULL, NULL, 'Peralatan', NULL, NULL, NULL, NULL, 'Plastik', NULL, NULL, 'Rusak', NULL, 12000.00, 12000.00, 'kakkaj', NULL),
 ('1.3.2.05.003.004.015', 'Meja Rapat', '2', NULL, 'Ruang 14', 'Ruang 14', 'Bidang Komunikasi dan Kehumasan', 'Dinkominfotik Kab. Brebes', '2024-09-01', '2024-09-01', 'Meja', NULL, 'Peralatan', NULL, NULL, NULL, NULL, 'Besi', NULL, NULL, NULL, NULL, 70000.00, 70000.00, NULL, NULL),
 ('1.3.2.05.003.004.016', 'PC kantor', '5', NULL, 'Ruang Sekretariat', 'Ruang Sekretariat', 'Bidang Komunikasi dan Kehumasan', 'Dinkominfotik Kab. Brebes', '2024-05-14', '2024-06-18', 'Lenovo', NULL, 'Mesin dan Elektronik', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 5000000.00, 6000000.00, NULL, NULL),
 ('1.3.2.05.003.004.020', 'Sepeda Motor', '9', '12', 'Parkiran', 'Parkiran', NULL, 'Dinkominfotik Kab. Brebes', '2024-01-16', '2024-01-16', 'Honda Revo', NULL, 'kendaraan', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 19000000.00, 20000000.00, NULL, NULL),
-('1.3.2.05.003.004.021', 'Mesin Deasel', '10', '12', 'Ruang 14', 'Ruang tamu', NULL, 'Dinkominfotik Kab. Brebes', '2020-09-09', '2020-09-09', NULL, NULL, 'Mesin dan Elektronik', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Rusak', '3 tahun', 3000000.00, 3000000.00, NULL, NULL);
+('1.3.2.05.003.004.021', 'Mesin Deasel', '10', '12', 'Ruang 14', 'fddyd', 'yfyfuyfy', 'vhjf', '2020-09-09', '2020-09-09', 'vmv', 'bmb', 'kendaraan', 'nnjwdjw', 'hghj', 'fh', 'h', 'h', '', '', 'Baik', '60', 3.00, 3.00, '', '');
 
 -- --------------------------------------------------------
 
@@ -267,7 +267,7 @@ INSERT INTO `lokasi` (`id_lokasi`, `nama_lokasi`, `bid_lokasi`, `tempat_lokasi`,
 ('12.11.09.21.01.01.45', 'Gudang', NULL, 'Dinkominfotik Kab. Brebes', 'ruangan', 'Gudang Barang'),
 ('12.11.09.21.01.01.50', 'Dapur', NULL, 'Dinkominfotik Kab.Brebes', 'ruangan', 'dapur'),
 ('121332425.2424', 'Ruang Produksi', 'Humas', 'Dinkominfotik BBs', 'ruangan', 'jdjw'),
-('121332425.2424.7919', 'Ruang sekretariat', 'gaxkjgkjag', 'Dinkominfotik BBs', 'ruangan', 'njkjj');
+('730', 'ljld', 'knlwd', ',nd', 'fasilitas_umum', 'mmqd');
 
 -- --------------------------------------------------------
 
