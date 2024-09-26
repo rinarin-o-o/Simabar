@@ -28,7 +28,7 @@ $result = mysqli_query($conn, $query);
                 $nama_ruang = $row['nama_lokasi'];
         ?>
         <div class="col-xxl-5 col-md-3 mb-4">
-            <a href="inventaris_ruangan.php?id_lokasi=<?php echo $id_lokasi; ?>" class="text-decoration-none text-dark">
+        <a href="inventaris_ruangan.php?nama_lokasi=<?php echo urlencode($nama_ruang); ?>" class="text-decoration-none text-dark">
                 <div class="card info-card sales-card h-100">
                     <div class="card-body d-flex align-items-center">
                         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center me-3">

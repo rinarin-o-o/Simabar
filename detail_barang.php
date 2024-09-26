@@ -12,10 +12,32 @@ $result = mysqli_query($conn, $sql);
 // Check if item is found
 if (mysqli_num_rows($result) > 0) {
     $row = mysqli_fetch_assoc($result);
+
+    $kode_pemilik = $row['kode_pemilik'];
+    $sql_pemilik = "SELECT nama_pemilik FROM pemilik WHERE kode_pemilik = '$kode_pemilik'";
+    $result_pemilik = mysqli_query($conn, $sql_pemilik);
+    $row_pemilik = mysqli_fetch_assoc($result_pemilik);
+
+    // Jika tidak ada data pemilik
+    $nama_pemilik = isset($row_pemilik['nama_pemilik']) ? $row_pemilik['nama_pemilik'] : 'Pemilik tidak ditemukan';
+
+
+    // Mengambil data lokasi untuk opsi select
+    $sql_locations = "SELECT * FROM lokasi";
+    $locations_result = mysqli_query($conn, $sql_locations);
+
+    // Menyimpan lokasi dalam array
+    $locations = [];
+    while ($location = mysqli_fetch_assoc($locations_result)) {
+        $locations[] = $location;
+    }
+    
 } else {
     echo "Data barang tidak ditemukan.";
     exit;
 }
+
+
 ?>
 
 <?php include("component/header.php"); ?>
@@ -33,20 +55,23 @@ if (mysqli_num_rows($result) > 0) {
           <label for="nama_barang" class="col-sm-3 col-form-label">Nama Barang:</label>
           <div class="col-sm-9">
           <h5 class="card-title">
-        <input type="text" id="nama_barang" class="form-control" value="<?php echo $row['nama_barang']; ?>" readonly style="font-weight: bold; background-color: #f8f9fa; border: 1px solid #ced4da;">
+        <input type="text" id="nama_barang" class="form-control" value="<?php echo $row['nama_barang']; ?>" readonly style="font-weight: bold;">
       </h5>
           </div>
         </div>
         <div class="row mb-3">
-          <label for="no_registrasi" class="col-sm-3 col-form-label">No. Registrasi:</label>
+          <label for="no_regristrasi" class="col-sm-3 col-form-label">No. Registrasi:</label>
           <div class="col-sm-9">
-            <input type="text" id="no_registrasi" class="form-control" value="<?php echo $row['no_registrasi']; ?>" readonly>
+            <input type="text" id="no_regristrasi" class="form-control" value="<?php echo $row['no_regristrasi']; ?>" readonly>
           </div>
         </div>
         <div class="row mb-3">
           <label for="kode_pemilik" class="col-sm-3 col-form-label">Kode Pemilik:</label>
-          <div class="col-sm-9">
+          <div class="col-sm-3">
             <input type="text" id="kode_pemilik" class="form-control" value="<?php echo $row['kode_pemilik']; ?>" readonly>
+          </div>
+          <div class="col-sm-6">
+            <input type="text" id="nama_pemilik" name="nama_pemilik" class="form-control" value="<?php echo htmlspecialchars($nama_pemilik); ?>" readonly>
           </div>
         </div>
         <div class="row mb-3">
@@ -56,22 +81,57 @@ if (mysqli_num_rows($result) > 0) {
           </div>
         </div>
         <div class="row mb-3">
-          <label for="ruang_asal" class="col-sm-3 col-form-label">Ruang Asal:</label>
-          <div class="col-sm-9">
-            <input type="text" id="ruang_asal" class="form-control" value="<?php echo $row['ruang_asal']; ?>" readonly>
+        <label for="ruang_asal" class="col-sm-3 col-form-label">Lokasi Asal:</label>
+          <?php 
+          // Dapatkan lokasi asal berdasarkan ruang_asal yang tersimpan di barang
+          $ruang_asal = $row['ruang_asal']; // Asumsi ruang_asal diambil dari field di tabel data_barang
+          $sql_asal = "SELECT * FROM lokasi WHERE nama_lokasi = '$ruang_asal'";
+          $result_asal = mysqli_query($conn, $sql_asal);
+          $asal_location = mysqli_fetch_assoc($result_asal);
+
+          if ($asal_location): // Jika data lokasi asal ditemukan
+          ?>
+          <div class="col-sm-3">
+              <input type="text" id="ruang_asal" class="form-control" value="<?php echo $asal_location['nama_lokasi']; ?>" readonly>
           </div>
+          <div class="col-sm-3">
+              <input type="text" id="bid_asal" class="form-control" value="<?php echo $asal_location['bid_lokasi']; ?>" readonly>
+          </div>
+          <div class="col-sm-3">
+              <input type="text" id="tempat_asal" class="form-control" value="<?php echo $asal_location['tempat_lokasi']; ?>" readonly>
+          </div>
+          <?php else: ?>
+          <div class="col-sm-9">
+              <input type="text" class="form-control" value="Lokasi asal tidak ditemukan" readonly>
+          </div>
+          <?php endif; ?>
         </div>
+
         <div class="row mb-3">
-          <label for="ruang_sekarang" class="col-sm-3 col-form-label">Ruang Sekarang:</label>
-          <div class="col-sm-9">
-            <input type="text" id="ruang_sekarang" class="form-control" value="<?php echo $row['ruang_sekarang']; ?>" readonly>
+          <label for="ruang_sekarang" class="col-sm-3 col-form-label">Lokasi Sekarang:</label>
+          <?php 
+          // Dapatkan lokasi sekarang berdasarkan ruang_sekarang yang tersimpan di barang
+          $ruang_sekarang = $row['ruang_sekarang']; // Asumsi ruang_sekarang diambil dari field di tabel data_barang
+          $sql_sekarang = "SELECT * FROM lokasi WHERE nama_lokasi = '$ruang_sekarang'";
+          $result_sekarang = mysqli_query($conn, $sql_sekarang);
+          $sekarang_location = mysqli_fetch_assoc($result_sekarang);
+
+          if ($sekarang_location): // Jika data lokasi sekarang ditemukan
+          ?>
+          <div class="col-sm-3">
+              <input type="text" id="ruang_sekarang" class="form-control" value="<?php echo $sekarang_location['nama_lokasi']; ?>" readonly>
           </div>
-        </div>
-        <div class="row mb-3">
-          <label for="bid_ruang" class="col-sm-3 col-form-label">Nama Ruang/Bidang:</label>
-          <div class="col-sm-9">
-            <input type="text" id="bid_ruang" class="form-control" value="<?php echo $row['bid_ruang']; ?>" readonly>
+          <div class="col-sm-3">
+              <input type="text" id="bid_sekarang" class="form-control" value="<?php echo $sekarang_location['bid_lokasi']; ?>" readonly>
           </div>
+          <div class="col-sm-3">
+              <input type="text" id="tempat_sekarang" class="form-control" value="<?php echo $sekarang_location['tempat_lokasi']; ?>" readonly>
+          </div>
+          <?php else: ?>
+          <div class="col-sm-9">
+              <input type="text" class="form-control" value="Lokasi sekarang tidak ditemukan" readonly>
+          </div>
+          <?php endif; ?>
         </div>
         <div class="row mb-3">
           <label for="tgl_pembelian" class="col-sm-3 col-form-label">Tanggal Pembelian:</label>
@@ -179,9 +239,14 @@ if (mysqli_num_rows($result) > 0) {
         </div>
         <div id="photoSection" style="display:none;" class="row mb-3">
           <div class="col-sm-3 offset-sm-3">
-            <img src="<?php echo $row['foto_barang']; ?>" alt="Foto Barang" class="img-fluid" style="max-width: 100%; height: auto; border: 1px solid #ddd; padding: 5px;">
+            <?php if (!empty($row['foto_barang'])): ?>
+              <img src="images/<?php echo $row['foto_barang']; ?>" alt="Foto Barang" class="img-fluid" style="max-width: 100%; height: auto; border: 1px solid #ddd; padding: 5px;">
+            <?php else: ?>
+              <p>Belum ada foto.</p>
+            <?php endif; ?>
           </div>
         </div>
+
 
         <!-- Edit and Delete Actions -->
         <div class="row mb-3">
