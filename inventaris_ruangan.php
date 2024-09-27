@@ -1,5 +1,3 @@
-<!--bermasalah di kode ruang / id_lokasi-->
-
 <?php
 session_start();
 include 'koneksi/koneksi.php'; // Koneksi ke database
@@ -84,6 +82,9 @@ $total_pages = ceil($total_records / $limit);
       Kode Ruang: <?= htmlspecialchars($id_lokasi) ?>
     </div>
   </div>
+
+  <!-- Tombol Export -->
+  <a href="proses/barang/export_inventaris.php?id_lokasi=<?= $id_lokasi ?>&nama_lokasi=<?= urlencode($nama_ruang) ?>" class="btn btn-primary mb-3">Export Data</a>
 
   <!-- Tabel Inventaris -->
   <table class="table table-bordered">
