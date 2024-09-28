@@ -18,9 +18,9 @@
       <input type="text" name="query" placeholder="Search" title="Enter search keyword" class="form-control me-2">
       <button type="submit" title="Search" class="btn btn-outline-primary"><i class="bi bi-search"></i></button>
     </form>
-    <button type="button" class="btn btn-primary">
+    <a href="frm_tambah_mutasi.php" class="btn btn-primary">
       <i class="bi bi-plus"></i> Tambah Data
-    </button>
+    </a>
   </div><!-- End Search Bar and Add Button -->
 
   <!-- Sorting Options -->
@@ -30,7 +30,7 @@
       <select name="sort_by" id="sort-by" class="form-select" onchange="this.form.submit()">
         <option value="id" <?php echo (isset($_GET['sort_by']) && $_GET['sort_by'] == 'id') ? 'selected' : ''; ?>>ID</option>
         <option value="kode_barang" <?php echo (isset($_GET['sort_by']) && $_GET['sort_by'] == 'kode_barang') ? 'selected' : ''; ?>>Kode Barang</option>
-        <option value="tanggal_mutasi" <?php echo (isset($_GET['sort_by']) && $_GET['sort_by'] == 'tanggal_mutasi') ? 'selected' : ''; ?>>Tanggal Mutasi</option>
+        <option value="tgl_mutasi" <?php echo (isset($_GET['sort_by']) && $_GET['sort_by'] == 'tgl_mutasi') ? 'selected' : ''; ?>>Tanggal Mutasi</option>
         <option value="jenis_mutasi" <?php echo (isset($_GET['sort_by']) && $_GET['sort_by'] == 'jenis_mutasi') ? 'selected' : ''; ?>>Jenis Mutasi</option>
       </select>
     </form>
@@ -43,7 +43,7 @@
         <th scope="col">ID</th>
         <th scope="col">Kode Barang</th>
         <th scope="col">Nama Barang</th>
-        <th scope="col">Lokasi Awal</th>
+        <th scope="col">Lokasi Asal</th>
         <th scope="col">Lokasi Sekarang</th>
         <th scope="col">Jenis Mutasi</th>
         <th scope="col">Tanggal Mutasi</th>
@@ -54,7 +54,7 @@
     <tbody>
       <?php
       // Database connection
-      $conn = mysqli_connect("localhost", "root", "", "db_mybooku");
+      $conn = mysqli_connect("localhost", "root", "", "db_simabar");
 
       if (!$conn) {
           die("Connection failed: " . mysqli_connect_error());
@@ -64,13 +64,13 @@
       $sort_by = isset($_GET['sort_by']) ? $_GET['sort_by'] : 'id';
       
       // Validating sort_by parameter
-      $valid_sort_columns = ['id', 'kode_barang', 'tanggal_mutasi', 'jenis_mutasi'];
+      $valid_sort_columns = ['id', 'kode_barang', 'tgl_mutasi', 'jenis_mutasi'];
       if (!in_array($sort_by, $valid_sort_columns)) {
           $sort_by = 'id';
       }
 
       // Fetch data from database with sorting
-      $query = "SELECT * FROM mutasi_barang ORDER BY $sort_by";
+      $query = "SELECT * FROM mutasi_barang ORDER BY ''";
       $result = mysqli_query($conn, $query);
 
       if (mysqli_num_rows($result) > 0) {
@@ -79,11 +79,11 @@
                       <td>{$row['id']}</td>
                       <td>{$row['kode_barang']}</td>
                       <td>{$row['nama_barang']}</td>
-                      <td>{$row['lokasi_awal']}</td>
-                      <td>{$row['lokasi_sekarang']}</td>
+                      <td>{$row['ruang_asal']}</td>
+                      <td>{$row['ruang_sekarang']}</td>
                       <td>{$row['jenis_mutasi']}</td>
-                      <td>{$row['tanggal_mutasi']}</td>
-                      <td>{$row['penanggungjawab']}</td>
+                      <td>{$row['tgl_mutasi']}</td>
+                      <td>{$row['PIC']}</td>
                       <td>{$row['keterangan']}</td>
                     </tr>";
           }

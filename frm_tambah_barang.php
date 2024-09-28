@@ -26,8 +26,8 @@ include('component/header.php');
                 </div>
 
                 <div class="mb-3">
-                    <label for="no_registrasi" class="form-label">No Registrasi</label>
-                    <input type="text" name="no_registrasi" class="form-control" id="no_registrasi">
+                    <label for="no_regristrasi" class="form-label">No Regristrasi</label>
+                    <input type="text" name="no_regristrasi" class="form-control" id="no_regristrasi">
                 </div>
 
                 <div class="mb-3">
@@ -59,16 +59,45 @@ include('component/header.php');
                     <label for="tempat_ruang" class="form-label">Tempat Ruang</label>
                     <input type="text" name="tempat_ruang" class="form-control" id="tempat_ruang">
                 </div>
+                <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
                 <div class="mb-3">
                     <label for="tgl_pembelian" class="form-label">Tanggal Pembelian</label>
-                    <input type="date" name="tgl_pembelian" class="form-control" id="tgl_pembelian">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-calendar"></i></span>
+                        <input type="text" id="tgl_pembelian" name="tgl_pembelian" class="form-control" placeholder="mm/dd/yyyy">
+                    </div>
                 </div>
+
+                <script>
+                    $(function() {
+                        $("#tgl_pembelian").datepicker({
+                            dateFormat: 'mm/dd/yy'
+                        });
+                    });
+                </script>
+
+                <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
                 <div class="mb-3">
                     <label for="tgl_pembukuan" class="form-label">Tanggal Pembukuan</label>
-                    <input type="date" name="tgl_pembukuan" class="form-control" id="tgl_pembukuan">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-calendar"></i></span>
+                        <input type="text" id="tgl_pembukuan" name="tgl_pembukuan" class="form-control" placeholder="mm/dd/yyyy">
+                    </div>
                 </div>
+
+                <script>
+                    $(function() {
+                        $("#tgl_pembukuan").datepicker({
+                            dateFormat: 'mm/dd/yy'
+                        });
+                    });
+                </script>
 
                 <div class="mb-3">
                     <label for="merk" class="form-label">Merk</label>
@@ -121,7 +150,7 @@ include('component/header.php');
                 </div>
 
                 <div class="mb-3">
-                <label for="kondisi_barang" class="form-label">Kondisi Barang</label>
+                    <label for="kondisi_barang" class="form-label">Kondisi Barang</label>
                     <select name="kondisi_barang" class="form-select" id="kondisi_barang" required>
                         <option value="" disabled selected>Pilih Kondisi</option>
                         <option value="baik">Baik</option>
