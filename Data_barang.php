@@ -82,6 +82,7 @@ $total_pages = ceil($total_records / $limit);
     <thead class="table-secondary text-center">
       <tr>
         <th scope="col">No. Reg</th>
+        <th scope="col">Barcode</th>
         <th scope="col">Tanggal Perolehan</th>
         <th scope="col">Kode Barang</th>
         <th scope="col">Harga</th>
@@ -90,23 +91,40 @@ $total_pages = ceil($total_records / $limit);
       </tr>
     </thead>
     <tbody>
-      <?php
-      if (mysqli_num_rows($result) > 0) {
-          while ($row = mysqli_fetch_assoc($result)) {
-              echo "<tr class='text-center'>
-                      <td>{$row['no_regristrasi']}</td>
-                      <td>" . date('d/m/Y', strtotime($row['tgl_pembelian'])) . "</td>
-                      <td>{$row['kode_barang']}</td>
-                      <td>Rp " . number_format($row['harga_total'], 2, ',', '.') . "</td>
-                      <td>{$row['nama_barang']}</td>
-                      <td><a href='detail_barang.php?kode_barang={$row['kode_barang']}' class='text-primary'>Detail</a></td>
-                    </tr>";
-          }
-      } else {
-          echo "<tr><td colspan='6'>No data found.</td></tr>";
+  <?php
+  if (mysqli_num_rows($result) > 0) {
+      while ($row = mysqli_fetch_assoc($result)) {
+        $folder = "../images/qrcodes";
+        if (!is_dir($folder)) {
+            mkdir($folder, 0777, true); // Buat folder jika belum ada
+        }
+          // Buat kode unik QR untuk setiap barang
+          $kode = "simabar" . $row['no_regristrasi'] . "/" . $row['nama_barang'];
+          $filename = $folder. "kode" . $row['no_regristrasi'] . ".png";
+
+          // Hasilkan QR Code dan simpan dalam file PNG
+          require_once('proses/qrcode/qrlib.php');
+          QRcode::png($kode, $filename, "M", 2, 2);
+
+          // Tampilkan hasil QR dan detail lainnya dalam tabel
+          echo "<tr class='text-center'>
+                  <td>{$row['no_regristrasi']}</td>
+                  <td>
+                    <img src='$filename' alt='QR Code'>
+                  </td>
+                  <td>" . date('d/m/Y', strtotime($row['tgl_pembelian'])) . "</td>
+                  <td>{$row['kode_barang']}</td>
+                  <td>Rp " . number_format($row['harga_total'], 2, ',', '.') . "</td>
+                  <td>{$row['nama_barang']}</td>
+                  <td><a href='detail_barang.php?kode_barang={$row['kode_barang']}' class='text-primary'>Detail</a></td>
+                </tr>";
       }
-      ?>
-    </tbody>
+  } else {
+      echo "<tr><td colspan='7'>No data found.</td></tr>";
+  }
+  ?>
+</tbody>
+
   </table>
 
   <div class="text-start mb-3">

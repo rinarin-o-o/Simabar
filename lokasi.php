@@ -58,32 +58,60 @@ $result = mysqli_query($conn, $sql);
         <th scope="col" style="width: 15%;">Bidang</th>
         <th scope="col" style="width: 20%;">Tempat Asal</th>
         <th scope="col" style="width: 20%;">Deskripsi</th>
+        <th scope="col" style="width: 20%;">Barcode</th>
         <th scope="col" style="width: 10%;">Aksi</th>
       </tr>
     </thead>
     <tbody>
-    <?php
-$no = $offset + 1;
-while ($row = mysqli_fetch_assoc($result)) {
-  echo "<tr class='text-center'>";
-  echo "<th scope='row'>{$no}</th>";
-  echo "<td>{$row['id_lokasi']}</td>";
-  echo "<td>{$row['nama_lokasi']}</td>";
-  echo "<td>{$row['bid_lokasi']}</td>";
-  echo "<td>{$row['tempat_lokasi']}</td>";
-  echo "<td>{$row['desk_lokasi']}</td>";
-  echo "<td>
-          <a href='frm_edit_lokasi.php?id_lokasi={$row['id_lokasi']}' class='btn btn-warning btn-sm' title='Edit'>
-            <i class='bi bi-pencil'></i>
-          </a>
-          <button class='btn btn-danger btn-sm btn-hapus' data-id_lokasi='{$row['id_lokasi']}' title='Hapus'>
-            <i class='bi bi-trash'></i>
-          </button>
-        </td>";
-  echo "</tr>";
-  $no++;
-}
-?>
+            <?php
+        $no = $offset + 1;
+        if (mysqli_num_rows($result) > 0) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                // Direktori untuk menyimpan QR Code
+                $folder = "../images/qrcodes/";
+                if (!is_dir($folder)) {
+                    mkdir($folder, 0777, true); // Buat folder jika belum ada
+                }
+
+                // Membuat kode unik QR untuk setiap barang
+                $kode = "simabar" . $row['id_lokasi'] . "/" . $row['nama_lokasi'];
+                $filename = $folder . "kode_" . $row['id_lokasi'] . ".png";
+
+                // Menghasilkan QR Code dan simpan dalam file PNG
+                require_once('proses/qrcode/qrlib.php');
+                QRcode::png($kode, $filename, "M", 2, 2);
+
+                // Tampilkan hasil QR Code dan detail lainnya dalam tabel
+                echo "<tr class='text-center'>";
+                echo "<th scope='row'>{$no}</th>";
+                echo "<td>{$row['id_lokasi']}</td>";
+                echo "<td>{$row['nama_lokasi']}</td>";
+                echo "<td>{$row['bid_lokasi']}</td>";
+                echo "<td>{$row['tempat_lokasi']}</td>";
+                echo "<td>{$row['desk_lokasi']}</td>";
+
+                // Kolom untuk QR Code
+                echo "<td><img src='$filename' alt='QR Code' /></td>";
+
+                // Tombol edit dan hapus
+                echo "<td>
+                        <a href='frm_edit_lokasi.php?id_lokasi={$row['id_lokasi']}' class='btn btn-warning btn-sm' title='Edit'>
+                          <i class='bi bi-pencil'></i>
+                        </a>
+                        <button class='btn btn-danger btn-sm btn-hapus' data-id_lokasi='{$row['id_lokasi']}' title='Hapus'>
+                          <i class='bi bi-trash'></i>
+                        </button>
+                      </td>";
+                echo "</tr>";
+
+                $no++;
+            }
+        } else {
+            echo "<tr><td colspan='8' class='text-center'>Tidak ada data ditemukan</td></tr>";
+        }
+        ?>
+
+
 
 
     </tbody>
