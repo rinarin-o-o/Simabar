@@ -27,8 +27,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $no_polisi = mysqli_real_escape_string($conn, $_POST['no_polisi']);
     $kondisi_barang = mysqli_real_escape_string($conn, $_POST['kondisi_barang']);
     $masa_manfaat = mysqli_real_escape_string($conn, $_POST['masa_manfaat']);
-    $harga_awal = mysqli_real_escape_string($conn, $_POST['harga_awal']);
-    $harga_total = mysqli_real_escape_string($conn, $_POST['harga_total']);
+    // For harga_awal and harga_total, remove any commas
+    $harga_awal_raw = $_POST['harga_awal'];
+    $harga_total_raw = $_POST['harga_total'];
+
+    // Remove commas from harga_awal and harga_total
+    $harga_awal = str_replace(',', '', $harga_awal_raw);
+    $harga_total = str_replace(',', '', $harga_total_raw);
+
+    // Sanitize harga_awal and harga_total
+    $harga_awal = mysqli_real_escape_string($conn, $harga_awal);
+    $harga_total = mysqli_real_escape_string($conn, $harga_total);
+
     $keterangan = mysqli_real_escape_string($conn, $_POST['keterangan']);
 
     // Check if kode_pemilik exists in pemilik table
@@ -114,4 +124,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header('Location: ../../Data_barang.php');
     exit;
 }
-?>
