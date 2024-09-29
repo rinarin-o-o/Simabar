@@ -1,3 +1,5 @@
+<!--database tambahkan id_pemeliharaan, jadikan PK, id_pemeliharaan adalah FK-->
+
 <?php include("component/header.php"); ?>
 <?php include("koneksi/koneksi.php"); // Include DB connection ?>
 
@@ -28,6 +30,7 @@
   <table class="table table-bordered">
     <thead class="table-secondary text-center">
       <tr>
+        <th scope="col">ID Pemeliharaan</th>
         <th scope="col">Kode Barang</th>
         <th scope="col">Nama Barang</th>
         <th scope="col">Deskripsi Pemeliharaan / Kerusakan</th>
@@ -54,6 +57,7 @@
       if (mysqli_num_rows($result) > 0) {
           while ($row = mysqli_fetch_assoc($result)) {
               echo "<tr class='text-center'>
+                      <td>{$row['id_pemeliharaan']}</td>
                       <td>{$row['kode_barang']}</td>
                       <td>{$row['nama_barang']}</td>
                       <td>{$row['desk_pemeliharaan']}</td>
@@ -62,12 +66,12 @@
                       <td>{$row['lama_perbaikan']}</td>
                       <td>Rp " . number_format($row['biaya_perbaikan'], 2, ',', '.') . "</td>
                       <td>
-                        <a href='edit_pemeliharaan.php?kode_barang={$row['kode_barang']}' class='btn btn-warning btn-sm' data-bs-toggle='tooltip' title='Edit'>
+                        <a href='frm_edit_pemeliharaan.php?id_pemeliharaan={$row['id_pemeliharaan']}' class='btn btn-warning btn-sm' data-bs-toggle='tooltip' title='Edit'>
                           <i class='bi bi-pencil'></i>
                         </a>
-                        <a href='hapus_pemeliharaan.php?kode_barang={$row['kode_barang']}' class='btn btn-danger btn-sm' onclick='return confirm(\"Apakah Anda yakin ingin menghapus Riwayat pemeliharaan ini?\")' data-bs-toggle='tooltip' title='Hapus'>
+                        <button class='btn btn-danger btn-sm btn-hapus' data-id_pemeliharaan='{$row['id_pemeliharaan']}' title='Hapus'>
                           <i class='bi bi-trash'></i>
-                        </a>
+                        </button>
                       </td>
                     </tr>";
               
@@ -78,7 +82,7 @@
               mysqli_query($conn, $updateHargaTotalSql);
           }
       } else {
-          echo "<tr><td colspan='9' class='text-center'>No data available</td></tr>";
+          echo "<tr><td colspan='9' class='text-center'>Tidak ada data yang cocok</td></tr>";
       }
       ?>
     </tbody>
@@ -112,3 +116,33 @@
 </main><!-- End Main Content -->
 
 <?php include("component/footer.php"); ?>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+$(document).ready(function() {
+    // Event handler untuk tombol hapus
+    $('.btn-hapus').on('click', function() {
+        // Ambil id_pemeliharaan dari atribut data
+        var id_pemeliharaan = $(this).data('id_pemeliharaan');
+
+        // Tampilkan popup SweetAlert2
+        Swal.fire({
+            title: 'Apakah kamu yakin?',
+            text: "Data ini akan dihapus secara permanen!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Redirect ke halaman hapus
+                window.location.href = 'proses/pemeliharaan/hapus_pemeliharaan.php?id_pemeliharaan=' + id_pemeliharaan;
+            }
+        });
+    });
+});
+</script>
