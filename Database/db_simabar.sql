@@ -132,7 +132,8 @@ INSERT INTO `data_barang` (`kode_barang`, `nama_barang`, `no_regristrasi`, `kode
 --
 
 CREATE TABLE `data_pemeliharaan` (
-  `kode_barang` varchar(50) DEFAULT NULL,
+  `id_pemeliharaan` varchar(50) NOT NULL,
+  `kode_barang` varchar(50) NOT NULL,
   `desk_pemeliharaan` text DEFAULT NULL,
   `perbaikan` text DEFAULT NULL,
   `tgl_perbaikan` date DEFAULT NULL,
@@ -140,14 +141,16 @@ CREATE TABLE `data_pemeliharaan` (
   `biaya_perbaikan` decimal(15,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+
 --
 -- Dumping data for table `data_pemeliharaan`
 --
 
-INSERT INTO `data_pemeliharaan` (`kode_barang`, `desk_pemeliharaan`, `perbaikan`, `tgl_perbaikan`, `lama_perbaikan`, `biaya_perbaikan`) VALUES
-('1.3.2.05.003.004.016', 'Hardisk Rusalk', 'Pembelian Hardisk', '2024-07-09', '3 hari', 1000000.00),
-('1.3.2.05.003.004.020', 'Servis', 'Pembelian Oli', '2024-05-13', '1 hari', 750000.00),
-('1.3.2.05.003.004.020', 'servis kedua', 'pembelian dan penggantian kampas, knalpot', '2024-08-13', '2 hari', 1000000.00);
+INSERT INTO `data_pemeliharaan` (`id_pemeliharaan`, `kode_barang`, `desk_pemeliharaan`, `perbaikan`, `tgl_perbaikan`, `lama_perbaikan`, `biaya_perbaikan`) VALUES
+('MNT0000001','1.3.2.05.003.004.016', 'Hardisk Rusalk', 'Pembelian Hardisk', '2024-07-09', '3 hari', 1000000.00),
+('MNT0000002','1.3.2.05.003.004.020', 'Servis', 'Pembelian Oli', '2024-05-13', '1 hari', 750000.00),
+('MNT0000003','1.3.2.05.003.004.020', 'servis kedua', 'pembelian dan penggantian kampas, knalpot', '2024-08-13', '2 hari', 1000000.00);
+
 
 -- --------------------------------------------------------
 
@@ -358,7 +361,9 @@ ALTER TABLE `data_barang`
 -- Indexes for table `data_pemeliharaan`
 --
 ALTER TABLE `data_pemeliharaan`
-  ADD KEY `kode_barang` (`kode_barang`);
+  ADD PRIMARY KEY (`id_pemeliharaan`),
+  ADD KEY `id_pemeliharaan` (`id_pemeliharaan`),
+  ADD KEY `fk_kode_barang` (`kode_barang`);
 
 --
 -- Indexes for table `inventaris_ruangan`
