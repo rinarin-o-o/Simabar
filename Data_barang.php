@@ -22,7 +22,7 @@ if (isset($_GET['filter']) && $_GET['filter'] === 'rusak') {
 }
 
 // Fetch data
-$sql = "SELECT no_regristrasi, tgl_pembelian, kode_barang, harga_total, nama_barang 
+$sql = "SELECT no_regristrasi, keterangan, kode_barang, harga_total, nama_barang, kondisi_barang, ruang_sekarang, tgl_pembelian
         FROM data_barang 
         $search_query 
         LIMIT ?, ?";
@@ -92,36 +92,45 @@ $total_pages = ceil($total_records / $limit);
     </thead>
     <tbody>
   <?php
+ 
   if (mysqli_num_rows($result) > 0) {
-      while ($row = mysqli_fetch_assoc($result)) {
+    while ($row = mysqli_fetch_assoc($result)) {
         $folder = "../images/qrcodes";
         if (!is_dir($folder)) {
             mkdir($folder, 0777, true); // Buat folder jika belum ada
         }
-          // Buat kode unik QR untuk setiap barang
-          $kode = "simabar" . $row['no_regristrasi'] . "/" . $row['nama_barang'];
-          $filename = $folder. "kode" . $row['no_regristrasi'] . ".png";
+        
+        // Buat kode unik QR untuk setiap barang
+        $kode = "simabar " . 
+                "Nomor Registrasi : " . $row['no_regristrasi'] . "\n" . 
+                "Nama Barang : " . $row['nama_barang'] . "\n" . 
+                "Kondisi Barang : " . $row['kondisi_barang'] . "\n" . 
+                "Keterangan Barang : " . $row['keterangan'] . "\n";
+        $filename = $folder . "/kode" . $row['no_regristrasi'] . ".png"; // Tambahkan garis miring (/) sebelum 'kode'
 
-          // Hasilkan QR Code dan simpan dalam file PNG
-          require_once('proses/qrcode/qrlib.php');
-          QRcode::png($kode, $filename, "M", 2, 2);
+        // Hasilkan QR Code dalam ukuran besar untuk unduhan
+        require_once('proses/qrcode/qrlib.php');
+        QRcode::png($kode, $filename, "M", 10, 2); // Menghasilkan QR Code dengan ukuran 1000 x 1000 pixel
 
-          // Tampilkan hasil QR dan detail lainnya dalam tabel
-          echo "<tr class='text-center'>
-                  <td>{$row['no_regristrasi']}</td>
-                  <td>
-                    <img src='$filename' alt='QR Code'>
-                  </td>
-                  <td>" . date('d/m/Y', strtotime($row['tgl_pembelian'])) . "</td>
-                  <td>{$row['kode_barang']}</td>
-                  <td>Rp " . number_format($row['harga_total'], 2, ',', '.') . "</td>
-                  <td>{$row['nama_barang']}</td>
-                  <td><a href='detail_barang.php?kode_barang={$row['kode_barang']}' class='text-primary'>Detail</a></td>
-                </tr>";
-      }
+        // Tampilkan hasil QR dengan ukuran kecil (misalnya 100 x 100 pixel)
+        echo "<tr class='text-center'>
+                <td>{$row['no_regristrasi']}</td>
+                <td>
+                    <img src='$filename' alt='QR Code' style='width: 100px; height: 100px;'> <!-- Tampilkan ukuran kecil -->
+                    <br>
+                    <a href='$filename' download='{$row['nama_barang']}_QR_Code_{$row['no_regristrasi']}.png' class='btn btn-success btn-sm mt-2'>Download QR Code</a>
+                </td>
+                <td>" . date('d/m/Y', strtotime($row['tgl_pembelian'])) . "</td>
+                <td>{$row['kode_barang']}</td>
+                <td>Rp " . number_format($row['harga_total'], 2, ',', '.') . "</td>
+                <td>{$row['nama_barang']}</td>
+                <td><a href='detail_barang.php?kode_barang={$row['kode_barang']}' class='text-primary'>Detail</a></td>
+              </tr>";
+    }
   } else {
-      echo "<tr><td colspan='7'>No data found.</td></tr>";
+    echo "<tr><td colspan='7'>No data found.</td></tr>";
   }
+  
   ?>
 </tbody>
 
